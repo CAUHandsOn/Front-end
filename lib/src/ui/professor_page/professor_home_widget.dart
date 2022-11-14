@@ -70,7 +70,6 @@ class _ProfessorWidgetState extends State<ProfessorWidget> {
     return Scaffold(
       body: _navigationBodyWidget(),
       bottomNavigationBar: _bottomNavigationBarWidget(),
-
     );
   }
 }
