@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
 import 'package:handson/src/ui/home.dart';
 import 'package:handson/src/ui/splash_widget.dart';
+import 'package:handson/src/ui/student_page/student_home_widget.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
       ),
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: StudentWidget(),
     );
   }
 }
