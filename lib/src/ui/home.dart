@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
 import 'package:handson/src/provider/classroom_provider.dart';
+import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/professor_page/professor_home_widget.dart';
 import 'package:handson/src/ui/register/register_widget.dart';
 import 'package:handson/src/ui/student_page/student_home_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -20,6 +25,25 @@ class _HomeState extends State<Home> {
   bool _isIdSaved = false;
   bool _isAutoLogin = false;
   String role = 'professor';
+
+  Future<dynamic> _callLoginAPI(Map<String, dynamic> data) async {
+    String url = 'https://bho.ottitor.shop/member/me';
+
+    http.Response response = await http.get(
+      Uri.parse(url),
+      headers: <String, String>{'Authorization': data['email']},
+    );
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      print('login response body');
+      print(body);
+      return body['data'];
+    } else {
+      print(response.statusCode);
+      throw Exception("Failed Login");
+    }
+  }
 
   Widget _loginBody() {
     return Padding(
@@ -106,31 +130,65 @@ class _HomeState extends State<Home> {
                       // 사용자 입력값 1차 검증후 로그인 로직 수행
                       _formKey.currentState!.save();
                       // if (login suceess)
-                      if (role == 'student') {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MultiProvider(providers: [
-                                      ChangeNotifierProvider(
-                                        create: (BuildContext context) =>
-                                            BottomNavigationProvider(),
-                                      )
-                                    ], child: StudentWidget())));
-                      }
-                      if (role == 'professor') {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MultiProvider(providers: [
-                                      ChangeNotifierProvider(
-                                        create: (BuildContext context) =>
-                                            BottomNavigationProvider(),
-                                      ),
-                                      ChangeNotifierProvider(
-                                        create: (BuildContext context) =>
-                                            ClassroomProvider(),
-                                      ),
-                                    ], child: ProfessorWidget())));
+
+                      var data = Map<String, String>();
+                      data['email'] = _currentEmail;
+                      data['password'] = _currentPassword;
+
+                      try {
+                        _callLoginAPI(data).then((response) {
+                          User user = User(
+                              email: _currentEmail,
+                              name: response['name'],
+                              password: _currentPassword,
+                              role: response['role'],
+                              id: response['id']);
+
+                          if (response['role'] == 'student') {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MultiProvider(providers: [
+                                          ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                UserProvider(),
+                                          ),
+                                          ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                BottomNavigationProvider(),
+                                          ),
+                                        ], child: StudentWidget(user: user))));
+                          }
+                          if (response['role'] == 'professor') {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MultiProvider(
+                                            providers: [
+                                              ChangeNotifierProvider(
+                                                create:
+                                                    (BuildContext context) =>
+                                                        UserProvider(),
+                                              ),
+                                              ChangeNotifierProvider(
+                                                create: (BuildContext
+                                                        context) =>
+                                                    BottomNavigationProvider(),
+                                              ),
+                                              ChangeNotifierProvider(
+                                                create:
+                                                    (BuildContext context) =>
+                                                        ClassroomProvider(),
+                                              ),
+                                            ],
+                                            child: ProfessorWidget(
+                                              user: user,
+                                            ))));
+                          }
+                        });
+                      } catch (e) {
+                        print(e);
                       }
                     }
                   },

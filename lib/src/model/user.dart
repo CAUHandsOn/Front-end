@@ -1,24 +1,31 @@
 class User {
-  String _id;
-  String _name;
-  String _email;
-  String _password;
-  String _role; // student or prof
+  String id;
+  String name;
+  String email;
+  String password;
+  String role; // student or prof
 
   User(
-      this._id,
-      this._name,
-      this._email,
-      this._password,
-      this._role
-      );
-
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.password,
+      required this.role});
 
   User.fromJson(Map<String, dynamic> json)
-      : _id = json['id'],
-        _name = json['name'],
-        _email = json['email'],
-        _password = json['password'],
-        _role = json['role'];
+      : id = json['id'],
+        name = json['name'],
+        email = json['email'],
+        password = json['password'],
+        role = json['role'];
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['password'] = password;
+    data['role'] = role;
+    return data;
+  }
 }
