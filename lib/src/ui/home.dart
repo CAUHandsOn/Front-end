@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Image.asset('logo.png', width: 328)],
+              children: [Image.asset('assets/images/logo.png', width: 328)],
             ),
             const SizedBox(
               height: 60,
