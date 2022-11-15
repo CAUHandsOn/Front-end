@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:handson/src/model/user.dart';
 
 class ProfessorRegisterView extends StatefulWidget {
   const ProfessorRegisterView({Key? key}) : super(key: key);
@@ -13,6 +17,24 @@ class _ProfessorRegisterViewState extends State<ProfessorRegisterView> {
   String _name = '';
   String _email = '';
   String _password = '';
+
+  _callRegisterAPI(Map<String,dynamic> data) async{
+    String url = 'https://bho.ottitor.shop/member';
+
+    http.Response response = await http.post(
+      Uri.parse(url),
+      headers: <String,String>{
+        'Content-Type' : 'application/json;charset=UTF-8'
+      },
+      body: jsonEncode(data)
+    );
+    if (response.statusCode == 200){
+      print("callReisterAPI success!");
+      return;
+    } else{
+      throw Exception('Failed to Register');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +141,13 @@ class _ProfessorRegisterViewState extends State<ProfessorRegisterView> {
                     // 회원가입 처리 로직
                     if(_formKey.currentState!.validate()){
                       _formKey.currentState!.save();
-
                       // api 통신 처리
-
-
+                      User data = User(email: _email,id: _professorId,name: _name,password: _password,role: 'professor');
+                      try {
+                        _callRegisterAPI(data.toJson());
+                      } catch (e){
+                        print(e);
+                      }
                       Navigator.pop(context, '회원가입이 완료되었습니다.');
                     }
 
