@@ -53,7 +53,7 @@ class _ProfessorRealtimeWidgetState extends State<ProfessorRealtimeWidget> {
 
   Widget _makeListView(Classroom classroom){
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.only(top: 16,left: 16,right: 16),
       child: ListView(
         children: [
           Container(
@@ -167,7 +167,6 @@ class _ProfessorRealtimeWidgetState extends State<ProfessorRealtimeWidget> {
           try {
             print("Professor_realtime_widget Consumer Called");
             if (provider.is_loaded) {
-              print("Classroom Provider is loaded!");
               return _makeListView(provider.classroomInfo);
             }
             print("outside consumer");
