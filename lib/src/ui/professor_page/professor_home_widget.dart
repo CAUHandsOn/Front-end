@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
 import 'package:handson/src/provider/classroom_provider.dart';
+import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/professor_page/prefessor_mypage_widget.dart';
 import 'package:handson/src/ui/professor_page/professor_classroom_widget.dart';
 import 'package:handson/src/ui/professor_page/professor_realtime_widget.dart';
@@ -8,16 +10,17 @@ import 'package:provider/provider.dart';
 
 
 class ProfessorWidget extends StatefulWidget {
-  ProfessorWidget({Key? key}) : super(key: key);
+  ProfessorWidget({Key? key, required this.user}) : super(key: key);
 
+  late User user;
   @override
   State<ProfessorWidget> createState() => _ProfessorWidgetState();
 }
 
 class _ProfessorWidgetState extends State<ProfessorWidget> {
+  late UserProvider _userProvider;
   late BottomNavigationProvider _bottomNavigationProvider;
   late ClassroomProvider _classroomProvider;
-
   Widget _bottomNavigationBarWidget(){
     return BottomNavigationBar(
         items: const [
@@ -58,10 +61,11 @@ class _ProfessorWidgetState extends State<ProfessorWidget> {
     print("professor_home_initstate called");
     // TODO: implement initState
     super.initState();
+    _userProvider = Provider.of<UserProvider>(context,listen: false);
+    _userProvider.initUser(widget.user.name, widget.user.email, widget.user.id, widget.user.role);
     _classroomProvider = Provider.of<ClassroomProvider>(context,listen: false);
     _classroomProvider.loadClassroomInfo(context);
   }
-
 
   @override
   Widget build(BuildContext context) {
