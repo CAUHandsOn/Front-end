@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handson/src/provider/bluetooth_test_provider.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
 import 'package:handson/src/ui/home.dart';
 import 'package:handson/src/ui/splash_widget.dart';
@@ -22,7 +23,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
       ),
       debugShowCheckedModeBanner: false,
-      home: StudentWidget(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (c) => BluetoothTestProvider()),
+        ],
+        child: StudentWidget(),
+      ),
     );
   }
 }
