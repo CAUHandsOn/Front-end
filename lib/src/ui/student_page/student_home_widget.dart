@@ -80,40 +80,32 @@ class _StudentWidgetState extends State<StudentWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('학생 페이지'),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ListView.separated(
-                shrinkWrap: true,
-                itemCount: Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList.length,
-                itemBuilder: (context, index){
-                  return ListTile(
-                    onTap: (){},
-                    leading: Icon(Icons.bluetooth),
-                    title: Text("${Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList[index].name}"),
-                    subtitle: Text("${Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList[index].id}"),
-                    trailing: Text("${Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList[index].rssi}"),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index){
-                  return const Divider();
-                },
-              ),
-              ElevatedButton(
-                child: const Text("버튼"),
-                onPressed: () async {
-                  await [Permission.bluetoothScan].request();
-                  await [Permission.bluetoothConnect].request();
-                  _ble_scan_start();
-                },
-              ),
-            ],
-          ),
+        actions: [
+          IconButton(
+          icon: const Icon(Icons.bluetooth), // 햄버거버튼 아이콘 생성
+          onPressed: () async {
+            await [Permission.bluetoothScan].request();
+            await [Permission.bluetoothConnect].request();
+            _ble_scan_start();
+          },
         ),
+        ],
       ),
+      body: ListView.separated(
+            itemCount: Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList.length,
+            itemBuilder: (context, index){
+              return ListTile(
+                onTap: (){},
+                leading: Icon(Icons.bluetooth),
+                title: Text("${Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList[index].name}"),
+                subtitle: Text("${Provider.of<BluetoothTestProvider>(context, listen: true).discoveredDeviceList[index].id}"),
+                trailing: Text("${Provider.of<BluetoothTestProvider>(context, listen: false).discoveredDeviceList[index].rssi}"),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index){
+              return const Divider();
+            },
+          ),
     );
   }
 }
