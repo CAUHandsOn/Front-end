@@ -158,6 +158,11 @@ class _HomeState extends State<Home> {
                                             create: (BuildContext context) =>
                                                 BottomNavigationProvider(),
                                           ),
+                                          ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                ClassroomProvider(),
+                                          ),
+
                                         ], child: StudentWidget(user: user))));
                           }
                           if (response['role'] == 'professor') {
