@@ -169,7 +169,6 @@ class _ProfessorRealtimeWidgetState extends State<ProfessorRealtimeWidget> {
             if (provider.is_loaded) {
               return _makeListView(provider.classroomInfo);
             }
-            print("outside consumer");
             return const Center(child: CircularProgressIndicator());
           } catch (e){
             print(e);
