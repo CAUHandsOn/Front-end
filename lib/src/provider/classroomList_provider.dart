@@ -20,7 +20,6 @@ class ClassroomListProvider extends ChangeNotifier{
       },
     );
     if (response.statusCode == 200){
-      print(jsonDecode(response.body)['data']);
       _classroomList = await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
         return ClassEntity.fromMap(data);
       }).toList();

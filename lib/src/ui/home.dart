@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
+import 'package:handson/src/provider/button_provider.dart';
 import 'package:handson/src/provider/classroom_provider.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/professor_page/professor_home_widget.dart';
@@ -168,6 +169,10 @@ class _HomeState extends State<Home> {
                                             create: (BuildContext context) =>
                                                 ClassroomListProvider(),
                                           ),
+                                          ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                ButtonProvider(),
+                                          ),
                                         ], child: StudentWidget(user: user))));
                           }
                           if (response['role'] == 'professor') {
@@ -194,6 +199,10 @@ class _HomeState extends State<Home> {
                                               ChangeNotifierProvider(
                                                 create: (BuildContext context) =>
                                                     ClassroomListProvider(),
+                                              ),
+                                              ChangeNotifierProvider(
+                                                create: (BuildContext context) =>
+                                                    ButtonProvider(),
                                               ),
                                             ],
                                             child: ProfessorWidget(
