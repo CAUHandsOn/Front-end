@@ -13,14 +13,12 @@ class ClassroomListProvider extends ChangeNotifier{
 
   Future<void> getClassroomList() async {
     String url = 'https://bho.ottitor.shop/room';
-
     http.Response response = await http.get(
       Uri.parse(url),
       headers: <String,String>{
         'Content-Type' : 'application/json;charset=UTF-8'
       },
     );
-    print(response.body);
     if (response.statusCode == 200){
       print(jsonDecode(response.body)['data']);
       _classroomList = await jsonDecode(response.body)['data'].map<ClassEntity>((data) {

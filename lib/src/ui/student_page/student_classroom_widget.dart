@@ -17,28 +17,33 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
   late ClassroomListProvider _classroomListProvider;
   late List<ClassEntity> classroomList;
 
+
   Widget _listBody(){
     _classroomListProvider.getClassroomList();
-    classroomList = _classroomListProvider.classroomList;
 
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: List.generate(
-          classroomList.length, (i){
+    return Consumer<ClassroomListProvider>(
+      builder: (context, provider, widget){
+        return ListView(
+          scrollDirection: Axis.vertical,
+          children: List.generate(
+              provider.classroomList.length, (i){
             return ListTile(
-              title: Text('${classroomList[i].name}'),
+              title: Text(provider.classroomList[i].name),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
 
               },
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 
+  
   @override
   Widget build(BuildContext context) {
-    _classroomListProvider = Provider.of<ClassroomListProvider>(context,listen: true);
+    _classroomListProvider = Provider.of<ClassroomListProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('강의실 목록'),
