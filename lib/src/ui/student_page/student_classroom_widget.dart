@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-
+import '../../model/classEntity.dart';
 import '../../model/classroom.dart';
 import '../../provider/classroomList_provider.dart';
 
@@ -16,21 +15,22 @@ class StudentClassroomWidget extends StatefulWidget {
 
 class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
   late ClassroomListProvider _classroomListProvider;
-  late List<Classroom> classroomList;
+  late List<ClassEntity> classroomList;
 
   Widget _listBody(){
+    _classroomListProvider.getClassroomList();
     classroomList = _classroomListProvider.classroomList;
-    print(classroomList);
+
     return ListView(
       scrollDirection: Axis.vertical,
-      children: List.generate(100, (i){
-        return ListTile(
-          leading: const Icon(Icons.home),
-          title: Text('Student ${i+1}'),
-          trailing: const Icon(Icons.arrow_forward),
-          onTap: () {
+      children: List.generate(
+          classroomList.length, (i){
+            return ListTile(
+              title: Text('${classroomList[i].name}'),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
 
-          },
+              },
         );
       }).toList(),
     );

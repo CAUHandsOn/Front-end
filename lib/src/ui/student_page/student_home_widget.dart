@@ -69,7 +69,7 @@ class _StudentWidgetState extends State<StudentWidget> {
     _classroomProvider = Provider.of<ClassroomProvider>(context,listen: false);
     _classroomProvider.loadClassroomInfo(context);
     _classroomListProvider = Provider.of<ClassroomListProvider>(context,listen: false);
-    _classroomListProvider.loadClassroomList(context);
+    // _classroomListProvider.loadClassroomList(context);
   }
 
   @override

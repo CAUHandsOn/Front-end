@@ -17,7 +17,7 @@ class ClassroomProvider extends ChangeNotifier {
   loadClassroomInfo(context) async {
     print("loadClassroomInfo called");
     String data = await loadJsonFile(context);
-    print('data = $data');
+    print(data);
     final jsonResult = jsonDecode(data);
     _classroomInfo = Classroom.fromJson(jsonResult);
     is_loaded = true;
