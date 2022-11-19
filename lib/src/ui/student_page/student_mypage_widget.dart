@@ -1,11 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../provider/button_provider.dart';
 
 class StudentMyPageWidget extends StatefulWidget {
@@ -39,6 +36,8 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
     if (response.statusCode == 200){
       return;
     } else{
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('변경이 저장되지 않았습니다')));
       throw Exception('Failed to Register');
     }
   }
