@@ -38,7 +38,7 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _classroomListProvider = Provider.of<ClassroomListProvider>(context,listen: false);
+    _classroomListProvider = Provider.of<ClassroomListProvider>(context,listen: true);
     return Scaffold(
       appBar: AppBar(
         title: const Text('강의실 목록'),
