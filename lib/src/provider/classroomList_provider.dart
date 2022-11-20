@@ -9,7 +9,9 @@ import '../model/classEntity.dart';
 class ClassroomListProvider extends ChangeNotifier{
 
   List<ClassEntity> _classroomList = [];
+  List<String> _classroomListString = [];
   List<ClassEntity> get classroomList => _classroomList;
+  List<String> get classroomListString => _classroomListString;
 
   Future<void> getClassroomList() async {
     String url = 'https://bho.ottitor.shop/room';
@@ -21,6 +23,7 @@ class ClassroomListProvider extends ChangeNotifier{
     );
     if (response.statusCode == 200){
       _classroomList = await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
+        _classroomListString.add((ClassEntity.fromMap(data).name));
         return ClassEntity.fromMap(data);
       }).toList();
     }
