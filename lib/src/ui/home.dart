@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
 
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: <String, String>{'Authorization': '20186984'},
+      headers: <String, String>{'Authorization': 학번},
     );
 
     if (response.statusCode == 200) {

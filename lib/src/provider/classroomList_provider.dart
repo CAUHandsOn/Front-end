@@ -9,7 +9,7 @@ import '../model/classEntity.dart';
 class ClassroomListProvider extends ChangeNotifier{
 
   List<ClassEntity> _classroomList = [];
-  List<String> _classroomListString = [];
+  final List<String> _classroomListString = [];
   List<ClassEntity> get classroomList => _classroomList;
   List<String> get classroomListString => _classroomListString;
 
@@ -23,7 +23,9 @@ class ClassroomListProvider extends ChangeNotifier{
     );
     if (response.statusCode == 200){
       _classroomList = await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
-        _classroomListString.add((ClassEntity.fromMap(data).name));
+        if (_classroomList.isEmpty){
+          _classroomListString.add((ClassEntity.fromMap(data).name));
+        }
         return ClassEntity.fromMap(data);
       }).toList();
     }
