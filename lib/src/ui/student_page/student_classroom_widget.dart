@@ -8,6 +8,8 @@ import '../../model/classroom.dart';
 import '../../provider/classroomList_provider.dart';
 import 'package:searchfield/searchfield.dart';
 
+import '../../provider/classroom_provider.dart';
+
 class StudentClassroomWidget extends StatefulWidget {
   const StudentClassroomWidget({Key? key}) : super(key: key);
 
@@ -17,10 +19,12 @@ class StudentClassroomWidget extends StatefulWidget {
 
 class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
   late ClassroomListProvider _classroomListProvider;
+  late ClassroomProvider _classroomProvider;
   late List<ClassEntity> classroomList;
 
   Widget _listBody(){
     _classroomListProvider.getClassroomList();
+    // _classroomListProvider.postEntrance();
 
     return Consumer<ClassroomListProvider>(
       builder: (context, provider, widget){
@@ -33,7 +37,9 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
             ),
             trailing: const Icon(Icons.arrow_forward),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const ClassroomInfo()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ClassroomInfo(
+                  classroomID : _classroomListProvider.classroomList[index].id
+              )));
             },
           ),
           separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1),
@@ -47,7 +53,7 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
       actions: <Widget>[
         IconButton(
           onPressed: () {
-            showSearch(context: context, delegate: Search(_classroomListProvider.classroomListString));
+            showSearch(context: context, delegate: Search(_classroomListProvider.classroomListString, _classroomProvider, _classroomListProvider));
           },
           icon: const Icon(Icons.search),
         ),
@@ -59,6 +65,7 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
   @override
   Widget build(BuildContext context) {
     _classroomListProvider = Provider.of<ClassroomListProvider>(context,listen: false);
+    _classroomProvider = Provider.of<ClassroomProvider>(context,listen: true);
     return Scaffold(
       appBar: myAppBar(),
       body: _listBody(),
@@ -69,7 +76,9 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
 class Search extends SearchDelegate {
   String selectedResult = "";
   final List<String> searchList;
-  Search(this.searchList);
+  final ClassroomProvider thisClassroomProvider;
+  final ClassroomListProvider thisClassroomListProvider;
+  Search(this.searchList, this.thisClassroomProvider, this.thisClassroomListProvider);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -117,7 +126,9 @@ class Search extends SearchDelegate {
           ),
           onTap: (){
             selectedResult = suggestionList[index];
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ClassroomInfo()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ClassroomInfo(
+                classroomID : thisClassroomListProvider.classroomList[index].id
+            )));
           },
         );
       },
