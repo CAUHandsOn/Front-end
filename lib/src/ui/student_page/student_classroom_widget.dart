@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:handson/src/ui/student_page/student_classroomInfo_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../model/classEntity.dart';
-import '../../model/classroom.dart';
 import '../../provider/classroomList_provider.dart';
-import 'package:searchfield/searchfield.dart';
 
 import '../../provider/classroom_provider.dart';
 
@@ -24,7 +20,6 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
 
   Widget _listBody(){
     _classroomListProvider.getClassroomList();
-    // _classroomListProvider.postEntrance();
 
     return Consumer<ClassroomListProvider>(
       builder: (context, provider, widget){
@@ -37,9 +32,19 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
             ),
             trailing: const Icon(Icons.arrow_forward),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ClassroomInfo(
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                  MultiProvider(providers: [
+                    ChangeNotifierProvider(
+                      create: (BuildContext context) =>
+                          ClassroomProvider(),
+                    ),
+                    ChangeNotifierProvider(
+                      create: (BuildContext context) =>
+                          ClassroomListProvider(),
+                    ),
+                  ], child : ClassroomInfo(
                   classroomID : _classroomListProvider.classroomList[index].id
-              )));
+              ))));
             },
           ),
           separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1),
@@ -126,9 +131,18 @@ class Search extends SearchDelegate {
           ),
           onTap: (){
             selectedResult = suggestionList[index];
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ClassroomInfo(
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MultiProvider(providers: [
+              ChangeNotifierProvider(
+                create: (BuildContext context) =>
+                    ClassroomProvider(),
+              ),
+              ChangeNotifierProvider(
+                create: (BuildContext context) =>
+                    ClassroomListProvider(),
+              ),
+            ], child : ClassroomInfo(
                 classroomID : thisClassroomListProvider.classroomList[index].id
-            )));
+            ))));
           },
         );
       },

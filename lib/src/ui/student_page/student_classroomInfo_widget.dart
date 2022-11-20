@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:handson/src/provider/classroom_provider.dart';
-
-import '../../provider/classroomList_provider.dart';
+import 'package:provider/provider.dart';
+import '../../provider/classroom_provider.dart';
 
 class ClassroomInfo extends StatefulWidget {
   const ClassroomInfo({Key? key, this.classroomID}) : super(key: key);
@@ -14,8 +13,13 @@ class ClassroomInfo extends StatefulWidget {
 class _ClassroomInfoState extends State<ClassroomInfo> {
 
   Widget _body(String classroomID){
-    return Center(
-      child: Text(classroomID)
+    return Consumer<ClassroomProvider>(
+      builder: (context, provider, widget) {
+        provider.getClassroomInfo(classroomID);
+        return Center(
+
+        );
+      },
     );
   }
 
@@ -24,7 +28,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('강의실 출입 내역'),
+        title: const Text('강의실 정보'),
       ),
       body: _body(widget.classroomID),
     );

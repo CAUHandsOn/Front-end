@@ -1,13 +1,20 @@
 import 'dart:convert';
+import 'package:handson/src/model/roomMembers.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/classroom.dart';
 
+import '../model/classEntity.dart';
+import '../model/classroomEntity.dart';
+import '../model/member.dart';
+
 class ClassroomProvider extends ChangeNotifier {
   late Classroom _classroomInfo;
   bool is_loaded = false;
+  List<RoomMembers> _memberList = [];
 
   Classroom get classroomInfo => _classroomInfo;
+  List<RoomMembers> get memberList => _memberList;
 
   Future<String> loadJsonFile(context) {
     return Future.value(DefaultAssetBundle.of(context)
@@ -24,7 +31,7 @@ class ClassroomProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getClassroomInfo(String id) async {
+  getClassroomInfo(String id) async {
     String url = 'https://bho.ottitor.shop/room/$id';
     http.Response response = await http.get(
       Uri.parse(url),
@@ -33,6 +40,21 @@ class ClassroomProvider extends ChangeNotifier {
       },
     );
     if (response.statusCode == 200){
+      print('hi ${jsonDecode(response.body)['data']}');
+      print('hello ${jsonDecode(response.body)['data']['roomMembers']}');
+
+      try{
+        print("111");
+        _memberList = await jsonDecode(response.body)['data']['roomMembers']
+            .map<RoomMembers>((data) { return RoomMembers.fromJson(data);})
+            .toList();
+        _memberList.forEach((e) => print(e));
+      }on Exception{
+
+      }
+      print("111");
+      print("222");
+
       print(response.body);
     }
     else{

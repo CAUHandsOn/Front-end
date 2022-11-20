@@ -10,7 +10,7 @@ class ClassroomListProvider extends ChangeNotifier{
   List<ClassEntity> get classroomList => _classroomList;
   List<String> get classroomListString => _classroomListString;
 
-  Future<void> getClassroomList() async {
+  getClassroomList() async {
     String url = 'https://bho.ottitor.shop/room';
     http.Response response = await http.get(
       Uri.parse(url),
@@ -19,6 +19,7 @@ class ClassroomListProvider extends ChangeNotifier{
       },
     );
     if (response.statusCode == 200){
+      print("hhhh ${jsonDecode(response.body)['data']}");
       _classroomList = await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
         if (_classroomList.isEmpty){
           _classroomListString.add((ClassEntity.fromMap(data).name));
