@@ -29,7 +29,7 @@ class _SplashWidgetState extends State<SplashWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const String imageLogoName = 'CAU_emblem.png';
+    const String imageLogoName = 'assets/images/CAU_emblem.png';
     return Scaffold(
 
       body: Container(

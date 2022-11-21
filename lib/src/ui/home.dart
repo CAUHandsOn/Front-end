@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
+import 'package:handson/src/provider/button_provider.dart';
 import 'package:handson/src/provider/classroom_provider.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/professor_page/professor_home_widget.dart';
@@ -10,6 +11,8 @@ import 'package:handson/src/ui/register/register_widget.dart';
 import 'package:handson/src/ui/student_page/student_home_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+
+import '../provider/classroomList_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -31,7 +34,7 @@ class _HomeState extends State<Home> {
 
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: <String, String>{'Authorization': data['email']},
+      headers: <String, String>{'Authorization': 수정필요},
     );
 
     if (response.statusCode == 200) {
@@ -57,7 +60,7 @@ class _HomeState extends State<Home> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Image.asset('logo.png', width: 328)],
+              children: [Image.asset('assets/images/logo.png', width: 328)],
             ),
             const SizedBox(
               height: 60,
@@ -162,7 +165,14 @@ class _HomeState extends State<Home> {
                                             create: (BuildContext context) =>
                                                 ClassroomProvider(),
                                           ),
-
+                                          ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                ClassroomListProvider(),
+                                          ),
+                                          ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                ButtonProvider(),
+                                          ),
                                         ], child: StudentWidget(user: user))));
                           }
                           if (response['role'] == 'professor') {
@@ -185,6 +195,14 @@ class _HomeState extends State<Home> {
                                                 create:
                                                     (BuildContext context) =>
                                                         ClassroomProvider(),
+                                              ),
+                                              ChangeNotifierProvider(
+                                                create: (BuildContext context) =>
+                                                    ClassroomListProvider(),
+                                              ),
+                                              ChangeNotifierProvider(
+                                                create: (BuildContext context) =>
+                                                    ButtonProvider(),
                                               ),
                                             ],
                                             child: ProfessorWidget(
