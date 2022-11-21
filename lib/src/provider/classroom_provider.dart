@@ -42,9 +42,6 @@ class ClassroomProvider extends ChangeNotifier {
       },
     );
     if (response.statusCode == 200) {
-      print('hi ${jsonDecode(response.body)['data']}');
-      print('hello ${jsonDecode(response.body)['data']['roomMembers']}');
-
       _buildingName = await jsonDecode(response.body)['data']['name'];
       _memberList = await jsonDecode(response.body)['data']['roomMembers']
           .where((data) => RoomMembers.fromJson(data).member.role == 'student')
@@ -57,13 +54,13 @@ class ClassroomProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  postEntrance(String id) async {
-    String url = 'https://bho.ottitor.shop/room/$id/me';
+  postEntrance(String roomId, String userId) async {
+    String url = 'https://bho.ottitor.shop/room/$roomId/me';
     http.Response response = await http.post(
       Uri.parse(url),
       headers: <String,String>{
         'Content-Type' : 'application/json;charset=UTF-8',
-        'Authorization' : '20182018',
+        'Authorization' : userId,
       },
     );
     if (response.statusCode == 200){

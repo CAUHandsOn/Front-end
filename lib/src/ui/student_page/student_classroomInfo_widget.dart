@@ -43,7 +43,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
           Text(
             '$totalCount명',
             style: const TextStyle(fontSize: 50, color: Colors.indigo),
-          )
+          ),
         ],
       ),
     );
@@ -123,28 +123,37 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       endIndent: 10,
                       indent: 10,
                     ),
-                    ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: provider.memberList.map((item) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 10,right: 10, bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(item.id,
-                                  style: const TextStyle(
-                                      fontSize: 16
-                                  )),
-                              Text(item.name,
-                                style: const TextStyle(
-                                    fontSize: 16
-                                ),),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    )
+                    provider.memberList.isEmpty
+                        ? const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(
+                            child : Text("현재 강의실에 참석한 학생이 없습니다", style:
+                            TextStyle(fontSize: 20,
+                            color: Colors.black),
+                           ),),
+                        )
+                        :ListView(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: provider.memberList.map((item) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 10,right: 10, bottom: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(item.id,
+                                      style: const TextStyle(
+                                          fontSize: 16
+                                      )),
+                                  Text(item.name,
+                                    style: const TextStyle(
+                                        fontSize: 16
+                                    ),),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
                   ],
                 ),
               )
@@ -157,6 +166,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
 
   @override
   Widget build(BuildContext context) {
+    //headCount값 가져올 수 있게끔 api수정 필요
     return Scaffold(
       appBar: AppBar(
         title: const Text('강의실 정보'),
