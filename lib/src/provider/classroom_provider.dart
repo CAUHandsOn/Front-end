@@ -46,8 +46,8 @@ class ClassroomProvider extends ChangeNotifier {
       print('hello ${jsonDecode(response.body)['data']['roomMembers']}');
 
       _buildingName = await jsonDecode(response.body)['data']['name'];
-      print(_buildingName);
       _memberList = await jsonDecode(response.body)['data']['roomMembers']
+          .where((data) => RoomMembers.fromJson(data).member.role == 'student')
           .map<Member>((data) => RoomMembers.fromJson(data).member)
           .toList();
     }
@@ -63,15 +63,14 @@ class ClassroomProvider extends ChangeNotifier {
       Uri.parse(url),
       headers: <String,String>{
         'Content-Type' : 'application/json;charset=UTF-8',
-        'Authorization' : '2018',
+        'Authorization' : '20182018',
       },
     );
     if (response.statusCode == 200){
-      print(response.body);
       print("출입");
     }
     else{
-      print("오류 발생");
+      print("출입 오류 발생");
     }
     notifyListeners();
   }

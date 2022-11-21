@@ -54,7 +54,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
       builder: (context, provider, widget) {
         provider.getClassroomInfo(classroomID);
         return Padding(
-          padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+          padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
           child: ListView(
             children: [
               Container(
@@ -108,9 +108,9 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
+                      children: const [
                         Padding(
-                          padding: const EdgeInsets.only(top: 10,left: 14),
+                          padding: EdgeInsets.only(top: 10,left: 14),
                           child: Text(
                             '실시간 참석자 명단',
                             textAlign: TextAlign.start,
@@ -157,7 +157,6 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('강의실 정보'),
