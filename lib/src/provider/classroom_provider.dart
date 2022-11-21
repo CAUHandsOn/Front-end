@@ -11,10 +11,12 @@ import '../model/member.dart';
 class ClassroomProvider extends ChangeNotifier {
   late Classroom _classroomInfo;
   bool is_loaded = false;
-  List<RoomMembers> _memberList = [];
+  List<Member> _memberList = [];
+  String _buildingName = '';
 
   Classroom get classroomInfo => _classroomInfo;
-  List<RoomMembers> get memberList => _memberList;
+  List<Member> get memberList => _memberList;
+  String get buildingName => _buildingName;
 
   Future<String> loadJsonFile(context) {
     return Future.value(DefaultAssetBundle.of(context)
@@ -39,23 +41,15 @@ class ClassroomProvider extends ChangeNotifier {
         'Content-Type' : 'application/json;charset=UTF-8'
       },
     );
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       print('hi ${jsonDecode(response.body)['data']}');
       print('hello ${jsonDecode(response.body)['data']['roomMembers']}');
 
-      try{
-        print("111");
-        _memberList = await jsonDecode(response.body)['data']['roomMembers']
-            .map<RoomMembers>((data) { return RoomMembers.fromJson(data);})
-            .toList();
-        _memberList.forEach((e) => print(e));
-      }on Exception{
-
-      }
-      print("111");
-      print("222");
-
-      print(response.body);
+      _buildingName = await jsonDecode(response.body)['data']['name'];
+      print(_buildingName);
+      _memberList = await jsonDecode(response.body)['data']['roomMembers']
+          .map<Member>((data) => RoomMembers.fromJson(data).member)
+          .toList();
     }
     else{
       print("오류 발생");
