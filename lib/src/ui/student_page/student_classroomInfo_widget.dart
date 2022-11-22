@@ -12,6 +12,10 @@ class ClassroomInfo extends StatefulWidget {
 }
 
 class _ClassroomInfoState extends State<ClassroomInfo> {
+  // late Map<String, List<dynamic>> entryLog;
+  // List<dynamic> entry = List.empty(growable: true);
+  // entry.add("2022-11-21T12:23:24.138883963");
+  // entryLog['310관'] =
 
   Widget _headCountWidget(int headCount) {
     return Center(
@@ -49,7 +53,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     );
   }
 
-  Widget _body(String classroomID){
+  Widget _Info(String classroomID){
     return Consumer<ClassroomProvider>(
       builder: (context, provider, widget) {
         provider.getClassroomInfo(classroomID);
@@ -164,14 +168,80 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     );
   }
 
+  Widget _entryLog(){
+    return Padding(
+      padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
+      child: ListView(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10,left: 14),
+                      child: Text(
+                        '현재 강의실 : 310관 B312',
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(
+                  endIndent: 10,
+                  indent: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 14),
+                      child: Text('현재 시간 : ${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now())}'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 60,),
+
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     //headCount값 가져올 수 있게끔 api수정 필요
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('강의실 정보'),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('강의실'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: '정보'),
+              Tab(text: '출입 내역'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            Tab(
+              child : _Info(widget.classroomID),
+            ),
+            Tab(
+              child : _entryLog(),
+            ),
+          ],
+        )
       ),
-      body: _body(widget.classroomID),
     );
   }
 }

@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
+import 'package:handson/src/provider/classroomList_provider.dart';
+import 'package:handson/src/provider/classroom_provider.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/home.dart';
 import 'package:handson/src/ui/splash_widget.dart';
+import 'package:handson/src/ui/student_page/student_classroomInfo_widget.dart';
+import 'package:handson/src/ui/student_page/student_classroom_widget.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (c) => ClassroomProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (c) => ClassroomListProvider(),
+      ),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
       ),
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: ClassroomInfo(classroomID : '310관'),
     );
   }
 }
