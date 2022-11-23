@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/user.dart';
@@ -13,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../provider/classroomList_provider.dart';
+
+String accessToken = '';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -30,11 +33,10 @@ class _HomeState extends State<Home> {
   String role = 'professor';
 
   Future<dynamic> _callLoginAPI(Map<String, dynamic> data) async {
-    String url = 'https://bho.ottitor.shop/member/me';
+    String url = 'https://bho.ottitor.shop/auth/sign-in';
 
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: <String, String>{'Authorization': data['id']},
     );
 
     if (response.statusCode == 200) {
@@ -127,7 +129,7 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: 50,
               child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // 로그인 process
                     if (_formKey.currentState!.validate()) {
                       // 사용자 입력값 1차 검증후 로그인 로직 수행
@@ -139,77 +141,88 @@ class _HomeState extends State<Home> {
                       data['password'] = _currentPassword;
 
                       try {
-                        _callLoginAPI(data).then((response) {
-                          User user = User(
-                              email: _currentEmail,
-                              name: response['name'],
-                              password: _currentPassword,
-                              role: response['role'],
-                              id: response['id']);
+                        log('callLignAPI 시작');
+                        var login = await http.post(
+                            Uri.parse('https://bho.ottitor.shop/auth/sign-in'),
+                            headers: <String, String>{
+                              'Content-Type': 'application/json;charset=UTF-8'
+                            },
+                            body: jsonEncode(<String, dynamic>{
+                              'email': _currentEmail,
+                              'password': _currentPassword
+                            }));
 
-                          if (response['role'] == 'student') {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        MultiProvider(providers: [
-                                          ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                UserProvider(),
-                                          ),
-                                          ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                BottomNavigationProvider(),
-                                          ),
-                                          ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                ClassroomProvider(),
-                                          ),
-                                          ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                ClassroomListProvider(),
-                                          ),
-                                          ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                ButtonProvider(),
-                                          ),
-                                        ], child: StudentWidget(user: user))));
-                          }
-                          if (response['role'] == 'professor') {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MultiProvider(
-                                            providers: [
-                                              ChangeNotifierProvider(
-                                                create:
-                                                    (BuildContext context) =>
-                                                        UserProvider(),
-                                              ),
-                                              ChangeNotifierProvider(
-                                                create: (BuildContext
-                                                        context) =>
-                                                    BottomNavigationProvider(),
-                                              ),
-                                              ChangeNotifierProvider(
-                                                create:
-                                                    (BuildContext context) =>
-                                                        ClassroomProvider(),
-                                              ),
-                                              ChangeNotifierProvider(
-                                                create: (BuildContext context) =>
-                                                    ClassroomListProvider(),
-                                              ),
-                                              ChangeNotifierProvider(
-                                                create: (BuildContext context) =>
-                                                    ButtonProvider(),
-                                              ),
-                                            ],
-                                            child: ProfessorWidget(
-                                              user: user,
-                                            ))));
-                          }
-                        });
+                        Map<String, dynamic> re1 = jsonDecode(login.body);
+                        log(re1.toString());
+                        // _callLoginAPI(data).then((response) {
+                        User user = User(
+                            email: _currentEmail,
+                            name: "준교수",
+                            password: _currentPassword,
+                            role: "professor",
+                            id: '1234');
+                        accessToken = re1['data']['accessToken'].toString();
+                        log('accessToken = ' + accessToken);
+                        log('callLignAPI 완료');
+                        // if (response['role'] == 'student') {
+                        //   Navigator.pushReplacement(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) =>
+                        //               MultiProvider(providers: [
+                        //                 ChangeNotifierProvider(
+                        //                   create: (BuildContext context) =>
+                        //                       UserProvider(),
+                        //                 ),
+                        //                 ChangeNotifierProvider(
+                        //                   create: (BuildContext context) =>
+                        //                       BottomNavigationProvider(),
+                        //                 ),
+                        //                 ChangeNotifierProvider(
+                        //                   create: (BuildContext context) =>
+                        //                       ClassroomProvider(),
+                        //                 ),
+                        //                 ChangeNotifierProvider(
+                        //                   create: (BuildContext context) =>
+                        //                       ClassroomListProvider(),
+                        //                 ),
+                        //                 ChangeNotifierProvider(
+                        //                   create: (BuildContext context) =>
+                        //                       ButtonProvider(),
+                        //                 ),
+                        //               ], child: StudentWidget(user: user))));
+                        // }
+                        if (user.role == 'professor') {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MultiProvider(
+                                          providers: [
+                                            ChangeNotifierProvider(
+                                              create: (BuildContext context) =>
+                                                  UserProvider(),
+                                            ),
+                                            ChangeNotifierProvider(
+                                              create: (BuildContext context) =>
+                                                  BottomNavigationProvider(),
+                                            ),
+                                            ChangeNotifierProvider(
+                                              create: (BuildContext context) =>
+                                                  ClassroomProvider(),
+                                            ),
+                                            ChangeNotifierProvider(
+                                              create: (BuildContext context) =>
+                                                  ClassroomListProvider(),
+                                            ),
+                                            ChangeNotifierProvider(
+                                              create: (BuildContext context) =>
+                                                  ButtonProvider(),
+                                            ),
+                                          ],
+                                          child: ProfessorWidget(
+                                            user: user,
+                                          ))));
+                        }
                       } catch (e) {
                         print(e);
                       }

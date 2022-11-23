@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../model/classEntity.dart';
+import '../ui/home.dart';
 
-class ClassroomListProvider extends ChangeNotifier{
-
+class ClassroomListProvider extends ChangeNotifier {
   List<ClassEntity> _classroomList = [];
   final List<String> _classroomListString = [];
   List<ClassEntity> get classroomList => _classroomList;
@@ -14,14 +16,17 @@ class ClassroomListProvider extends ChangeNotifier{
     String url = 'https://bho.ottitor.shop/room';
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: <String,String>{
-        'Content-Type' : 'application/json;charset=UTF-8'
+      headers: <String, String>{
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'Bearer $accessToken'
       },
     );
-    if (response.statusCode == 200){
+    log(jsonDecode(response.body).toString());
+    if (response.statusCode == 200) {
       print("hhhh ${jsonDecode(response.body)['data']}");
-      _classroomList = await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
-        if (_classroomList.isEmpty){
+      _classroomList =
+          await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
+        if (_classroomList.isEmpty) {
           _classroomListString.add((ClassEntity.fromMap(data).name));
         }
         return ClassEntity.fromMap(data);
@@ -68,7 +73,6 @@ class ClassroomListProvider extends ChangeNotifier{
   //   notifyListeners();
   // }
 
-
   // Future<String> loadJsonFile(context) {
   //   print("loading the classroomList file . . . ");
   //   return Future.value(DefaultAssetBundle.of(context)
@@ -105,4 +109,3 @@ class ClassroomListProvider extends ChangeNotifier{
 // }
 
 }
-

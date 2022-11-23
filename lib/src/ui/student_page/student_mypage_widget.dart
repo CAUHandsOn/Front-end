@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../provider/button_provider.dart';
+import '../home.dart';
 
 class StudentMyPageWidget extends StatefulWidget {
   const StudentMyPageWidget({Key? key}) : super(key: key);
@@ -17,41 +19,42 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
   late UserProvider _userProvider;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
-  _callPatchAPI(Map<String,dynamic> data, String originalID) async{
-    String url = 'https://bho.ottitor.shop/member/me';
+  _callPatchAPI(Map<String, dynamic> data, String originalID) async {
+    String url = 'https://bho.ottitor.shop/user/me';
 
     http.Response response = await http.patch(
       Uri.parse(url),
-      headers: <String,String>{'Authorization' : originalID, 'Content-Type': 'application/json;charset=UTF-8'},
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
       body: jsonEncode(data),
     );
     print(data['id']);
     print(jsonEncode(data));
     print(response.body);
     print(originalID);
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       return;
-    } else{
+    } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('변경이 저장되지 않았습니다')));
       throw Exception('Failed to Register');
     }
   }
 
-  Widget myInfo(context){
+  Widget myInfo(context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Container(
           height: MediaQuery.of(context).size.height * 0.5,
           decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10)
-          ),
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -60,22 +63,26 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('정보',
-                        style: TextStyle(color: Colors.indigo,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,),
+                    const Text(
+                      '정보',
+                      style: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     TextButton(
-                      child: const Text('수정하기',
-                        style: TextStyle(color: Colors.indigo,
+                      child: const Text(
+                        '수정하기',
+                        style: TextStyle(
+                            color: Colors.indigo,
                             fontSize: 24,
                             fontWeight: FontWeight.bold),
                       ),
-                      onPressed: (){
+                      onPressed: () {
                         _buttonProvider.updateEditButton(1);
                       },
                     ),
-
                   ],
                 ),
                 const SizedBox(
@@ -83,7 +90,8 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child : Text('학번 : ${_userProvider.id}',
+                  child: Text(
+                    '학번 : ${_userProvider.id}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: Colors.black,
@@ -100,7 +108,8 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child : Text('이름 : ${_userProvider.name}',
+                  child: Text(
+                    '이름 : ${_userProvider.name}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: Colors.black,
@@ -117,7 +126,8 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child : Text('이메일 : ${_userProvider.email}',
+                  child: Text(
+                    '이메일 : ${_userProvider.email}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: Colors.black,
@@ -137,7 +147,7 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
     );
   }
 
-  Widget myPage(context){
+  Widget myPage(context) {
     final _formKey = GlobalKey<FormState>();
     String _newId = '';
     String _newName = '';
@@ -149,9 +159,7 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.5,
           decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10)
-          ),
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
@@ -162,53 +170,75 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('정보',
-                        style: TextStyle(color: Colors.indigo,
+                      const Text(
+                        '정보',
+                        style: TextStyle(
+                          color: Colors.indigo,
                           fontSize: 24,
-                          fontWeight: FontWeight.bold,),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Container(
                         child: Row(
                           children: [
                             TextButton(
-                              child: const Text('저장하기',
-                                style: TextStyle(color: Colors.indigo,
+                              child: const Text(
+                                '저장하기',
+                                style: TextStyle(
+                                    color: Colors.indigo,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                               ),
-                              onPressed: () async{
-                                if(_formKey.currentState!.validate()){
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
-                                  _userProvider.initUser(_newName, _newEmail, _newId, _userProvider.role);
 
-                                  var data = <String, String>{};
-                                  data['name'] = _newName;
-                                  data['email'] = _newEmail;
-                                  data['id'] = _newId;
-
-                                  try{
-                                    await _callPatchAPI(data, _userProvider.originalID[0]);
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(content: Text('변경이 저장되었습니다')));
+                                  var data = <String, dynamic>{};
+                                  if (_newName != '' && _newName.isNotEmpty) {
+                                    data['name'] = _newName;
+                                  }
+                                  if (_newEmail != '' && _newEmail.isNotEmpty) {
+                                    data['email'] = _newEmail;
+                                  }
+                                  if (_newId != '' && _newId.isNotEmpty) {
+                                    data['id'] = _newId;
+                                  }
+                                  try {
+                                    var response = await _callPatchAPI(
+                                        data, _userProvider.originalID[0]);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text('변경이 저장되었습니다')));
                                     _buttonProvider.updateEditButton(0);
-                                  }on Exception{
+                                    Map re = jsonDecode(response.body);
+                                    log(re.toString());
+                                    _userProvider.initUser(
+                                        re['data']['name'],
+                                        re['data']['email'],
+                                        re['data']['id'],
+                                        _userProvider.role);
+                                  } on Exception {
                                     print('error');
                                   }
                                 }
                               },
                             ),
-                            const Text('/',
-                              style: TextStyle(color: Colors.indigo,
+                            const Text(
+                              '/',
+                              style: TextStyle(
+                                  color: Colors.indigo,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold),
                             ),
                             TextButton(
-                              child: const Text('취소',
-                                style: TextStyle(color: Colors.indigo,
+                              child: const Text(
+                                '취소',
+                                style: TextStyle(
+                                    color: Colors.indigo,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                               ),
-                              onPressed: (){
+                              onPressed: () {
                                 _buttonProvider.updateEditButton(0);
                               },
                             ),
@@ -293,8 +323,8 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
         title: const Text('마이페이지'),
       ),
       body: _buttonProvider.currentEditButton == 0
-              ? myInfo(context)
-              : myPage(context),
+          ? myInfo(context)
+          : myPage(context),
       backgroundColor: Colors.grey.withOpacity(0.25),
     );
   }

@@ -18,20 +18,18 @@ class _ProfessorRegisterViewState extends State<ProfessorRegisterView> {
   String _email = '';
   String _password = '';
 
-  _callRegisterAPI(Map<String,dynamic> data) async{
-    String url = 'https://bho.ottitor.shop/member';
+  _callRegisterAPI(Map<String, dynamic> data) async {
+    String url = 'https://bho.ottitor.shop/auth/sign-up';
 
-    http.Response response = await http.post(
-      Uri.parse(url),
-      headers: <String,String>{
-        'Content-Type' : 'application/json;charset=UTF-8'
-      },
-      body: jsonEncode(data)
-    );
-    if (response.statusCode == 200){
+    http.Response response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json;charset=UTF-8'
+        },
+        body: jsonEncode(data));
+    if (response.statusCode == 200) {
       print("callReisterAPI success!");
       return;
-    } else{
+    } else {
       throw Exception('Failed to Register');
     }
   }
@@ -139,18 +137,22 @@ class _ProfessorRegisterViewState extends State<ProfessorRegisterView> {
                 child: ElevatedButton(
                   onPressed: () {
                     // 회원가입 처리 로직
-                    if(_formKey.currentState!.validate()){
+                    if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       // api 통신 처리
-                      User data = User(email: _email,id: _professorId,name: _name,password: _password,role: 'professor');
+                      User data = User(
+                          email: _email,
+                          id: _professorId,
+                          name: _name,
+                          password: _password,
+                          role: 'professor');
                       try {
                         _callRegisterAPI(data.toJson());
-                      } catch (e){
+                      } catch (e) {
                         print(e);
                       }
                       Navigator.pop(context, '회원가입이 완료되었습니다.');
                     }
-
                   },
                   child: const Text('회원가입'),
                 ))

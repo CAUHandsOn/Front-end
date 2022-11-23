@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:handson/src/model/roomMembers.dart';
+import 'package:handson/src/ui/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/classroom.dart';
@@ -37,8 +38,9 @@ class ClassroomProvider extends ChangeNotifier {
     String url = 'https://bho.ottitor.shop/room/$id';
     http.Response response = await http.get(
       Uri.parse(url),
-      headers: <String,String>{
-        'Content-Type' : 'application/json;charset=UTF-8'
+      headers: <String, String>{
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'Bearer $accessToken'
       },
     );
     if (response.statusCode == 200) {
@@ -47,26 +49,24 @@ class ClassroomProvider extends ChangeNotifier {
           .where((data) => RoomMembers.fromJson(data).member.role == 'student')
           .map<Member>((data) => RoomMembers.fromJson(data).member)
           .toList();
-    }
-    else{
+    } else {
       print("오류 발생");
     }
     notifyListeners();
   }
 
   postEntrance(String roomId, String userId) async {
-    String url = 'https://bho.ottitor.shop/room/$roomId/me';
+    String url = 'https://bho.ottitor.shop/room/$roomId';
     http.Response response = await http.post(
       Uri.parse(url),
-      headers: <String,String>{
-        'Content-Type' : 'application/json;charset=UTF-8',
-        'Authorization' : userId,
+      headers: <String, String>{
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'Bearer $accessToken',
       },
     );
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       print("출입");
-    }
-    else{
+    } else {
       print("출입 오류 발생");
     }
     notifyListeners();
