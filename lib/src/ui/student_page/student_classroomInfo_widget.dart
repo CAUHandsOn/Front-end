@@ -4,6 +4,7 @@ import 'dart:js_util';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../model/classStudentNumber.dart';
 import '../../provider/classroom_provider.dart';
 
 class ClassroomInfo extends StatefulWidget {
@@ -23,6 +24,11 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
   HashMap<String, List<String>> entryLog = HashMap<String, List<String>>();
   List<String> entry = List.empty(growable: true);
 
+  @override
+  void initState(){
+    super.initState();
+    addList();
+  }
   void addList(){
     entry.add('2022-11-21T12:23:24.138883963');
     entry.add('2022-11-22T12:24:24.138883963');
@@ -30,9 +36,10 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     entry.add('2022-11-24T12:26:24.138883963');
     entry.add('2022-11-25T12:27:24.138883963');
 
-    entryLog['310관 312호'] = entry;
-  }
 
+    entryLog['310관 312호'] = entry;
+
+  }
 
   Widget _headCountWidget(int headCount) {
     return Center(
@@ -114,7 +121,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                     const SizedBox(height: 40,),
                     _headCountWidget(provider.memberList.length),
                     const SizedBox(height: 40,),
-                    _totalCountWidget(50),
+                    _totalCountWidget(ClassStudentNumber().classStudentNumber[classroomID]!),
                     const SizedBox(height: 40,),
                   ],
                 ),
@@ -261,6 +268,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                             onDismissed: (direction){//값을 완전히 삭제
                               setState(() {
                                 if(direction== DismissDirection.startToEnd){
+                                  print('길이 ${entryLog!['310관 312호']!.length}');
                                   entryLog!['310관 312호']!.removeAt(index);
                                 }
                               });
@@ -295,7 +303,6 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
   @override
   Widget build(BuildContext context) {
     //api로 교체 필요
-    addList();
 
     return DefaultTabController(
       length: 2,

@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
       ),
       debugShowCheckedModeBanner: false,
-      home: ClassroomInfo(classroomID: '310관'),
+      home: ClassroomInfo(classroomID: '310관 B312호'),
     );
   }
 }
