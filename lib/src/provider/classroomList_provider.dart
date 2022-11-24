@@ -18,7 +18,8 @@ class ClassroomListProvider extends ChangeNotifier {
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': 'Bearer $accessToken'
+        'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDE4NjI3NCIsIm5hbWUiOiLquYDrqoXsirkiLCJlbWFpbCI6Im1za0BjYXUuYWMua3IiLCJpZCI6IjIwMTg2Mjc0Iiwicm9sZSI6InN0dWRlbnQiLCJhdXRoIjoic3R1ZGVudCIsImV4cCI6MTY3NzY3MzQwNH0.XH4WDfYDU15yqxOenoxd8Gy_8W71D9k9YIrktFN8Iidq6AKFU0oNJv_JVIY1Jifjt3Uaj6k5BBNOwq8LhBiiEA'
+        // 'Authorization': 'Bearer $accessToken'
       },
     );
     log(jsonDecode(response.body).toString());
@@ -37,7 +38,7 @@ class ClassroomListProvider extends ChangeNotifier {
   //  j3m2rfrokwegwe
   // sajf34k2rl2332rwf213
 
-  // getClassroomInfo(String id) async {
+  // getStudentClassroomInfo(String id) async {
   //   String url = 'https://bho.ottitor.shop/room/$id';
   //   http.Response response = await http.get(
   //     Uri.parse(url),

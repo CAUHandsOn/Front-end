@@ -1,27 +1,16 @@
 import 'package:handson/src/model/roomMembers.dart';
 
-import 'student.dart';
-
-
 class ClassroomEntity{
-  // String _classroomID;
-  // String _classroomName;
-  List<RoomMembers> _rommMembers = [];
+  List<RoomMembers> _roomMembers = [];
 
-  // String get classroomID => _classroomID;
-  // String get classroomName => _classroomName;
-  List<RoomMembers> get rommMembers => _rommMembers;
+  List<RoomMembers> get roomMembers => _roomMembers;
 
 
   ClassroomEntity(
-      // this._classroomID,
-      // this._classroomName,
-      this._rommMembers
+      this._roomMembers
       );
 
   ClassroomEntity.fromJson(Map<String,dynamic> json):
-        // _classroomID = json['id'] as String,
-        // _classroomName = json['name'] as String,
-        _rommMembers = (json['roomMembers'] as List<dynamic>).map((item) => RoomMembers.fromJson(item)).toList();
+        _roomMembers = (json['roomMembers'] as List<dynamic>).map((item) => RoomMembers.fromJson(item)).toList();
 
 }

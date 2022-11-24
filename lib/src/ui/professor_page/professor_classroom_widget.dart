@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:handson/src/ui/student_page/student_classroomInfo_widget.dart';
+import 'package:handson/src/ui/professor_page/professor_classroomInfo_widget.dart';
 import 'package:provider/provider.dart';
 import '../../model/classEntity.dart';
 import '../../provider/classroomList_provider.dart';
@@ -10,8 +10,7 @@ class ProfessorClassroomWidget extends StatefulWidget {
   const ProfessorClassroomWidget({Key? key}) : super(key: key);
 
   @override
-  State<ProfessorClassroomWidget> createState() =>
-      _ProfessorClassroomWidgetState();
+  State<ProfessorClassroomWidget> createState() => _ProfessorClassroomWidgetState();
 }
 
 class _ProfessorClassroomWidgetState extends State<ProfessorClassroomWidget> {
@@ -49,9 +48,11 @@ class _ProfessorClassroomWidgetState extends State<ProfessorClassroomWidget> {
                                       ClassroomListProvider(),
                                 ),
                               ],
-                              child: ClassroomInfo(
+                              child: ProfessorClassroomInfo(
                                   classroomID: _classroomListProvider
-                                      .classroomList[index].id))));
+                                      .classroomList[index].id,
+                                  classroomName: _classroomListProvider
+                                      .classroomList[index].name))));
             },
           ),
           separatorBuilder: (BuildContext context, int index) =>
@@ -158,9 +159,11 @@ class Search extends SearchDelegate {
                                     ClassroomListProvider(),
                               ),
                             ],
-                            child: ClassroomInfo(
+                            child: ProfessorClassroomInfo(
                                 classroomID: thisClassroomListProvider
-                                    .classroomList[index].id))));
+                                    .classroomList[index].id,
+                                classroomName: thisClassroomListProvider
+                                    .classroomList[index].name))));
           },
         );
       },

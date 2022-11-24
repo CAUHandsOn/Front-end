@@ -1,20 +1,20 @@
 import 'dart:collection';
-import 'dart:js_util';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../model/classStudentNumber.dart';
 import '../../provider/classroom_provider.dart';
 
-class ClassroomInfo extends StatefulWidget {
-  const ClassroomInfo({Key? key, this.classroomID}) : super(key: key);
+class StudentClassroomInfo extends StatefulWidget {
+  const StudentClassroomInfo({Key? key, this.classroomID, this.classroomName}) : super(key: key);
   final classroomID;
+  final classroomName;
 
   @override
-  State<ClassroomInfo> createState() => _ClassroomInfoState();
+  State<StudentClassroomInfo> createState() => _StudentClassroomInfoState();
 }
 
-class _ClassroomInfoState extends State<ClassroomInfo> {
+class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
   var _switchValue = false;
 
   // api로 교체 필요
@@ -23,6 +23,11 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
   HashMap<String, List<String>> entryLog = HashMap<String, List<String>>();
   List<String> entry = List.empty(growable: true);
 
+  @override
+  void initState(){
+    super.initState();
+    addList();
+  }
   void addList(){
     entry.add('2022-11-21T12:23:24.138883963');
     entry.add('2022-11-22T12:24:24.138883963');
@@ -30,9 +35,10 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     entry.add('2022-11-24T12:26:24.138883963');
     entry.add('2022-11-25T12:27:24.138883963');
 
-    entryLog['310관 312호'] = entry;
-  }
 
+    entryLog['310관 312호'] = entry;
+
+  }
 
   Widget _headCountWidget(int headCount) {
     return Center(
@@ -70,10 +76,11 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     );
   }
 
-  Widget _Info(String classroomID){
-    return Consumer<ClassroomProvider>(
-      builder: (context, provider, widget) {
-        provider.getClassroomInfo(classroomID);
+  Widget _Info(String classroomID, String classroomName){
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => ClassroomProvider(),
+      builder: (context, child) {
+        context.watch<ClassroomProvider>().getStudentClassroomInfo(classroomID);
         return Padding(
           padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
           child: ListView(
@@ -91,7 +98,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                         Padding(
                           padding: const EdgeInsets.only(top: 10,left: 14),
                           child: Text(
-                            '현재 강의실 : ${provider.buildingName}',
+                            '현재 강의실 : $classroomName',
                             textAlign: TextAlign.start,
                             style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
                           ),
@@ -112,9 +119,9 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       ],
                     ),
                     const SizedBox(height: 40,),
-                    _headCountWidget(provider.memberList.length),
+                    _headCountWidget(context.watch<ClassroomProvider>().userList.length),
                     const SizedBox(height: 40,),
-                    _totalCountWidget(50),
+                    _totalCountWidget(ClassStudentNumber().classStudentNumber[classroomName]!),
                     const SizedBox(height: 40,),
                   ],
                 ),
@@ -144,7 +151,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       endIndent: 10,
                       indent: 10,
                     ),
-                    provider.memberList.isEmpty
+                    context.watch<ClassroomProvider>().userList.isEmpty
                         ? const Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Center(
@@ -156,7 +163,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                         :ListView(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          children: provider.memberList.map((item) {
+                          children: context.watch<ClassroomProvider>().userList.map((item) {
                             return Padding(
                               padding: const EdgeInsets.only(left: 10,right: 10, bottom: 10),
                               child: Row(
@@ -261,6 +268,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                             onDismissed: (direction){//값을 완전히 삭제
                               setState(() {
                                 if(direction== DismissDirection.startToEnd){
+                                  print('길이 ${entryLog!['310관 312호']!.length}');
                                   entryLog!['310관 312호']!.removeAt(index);
                                 }
                               });
@@ -295,7 +303,6 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
   @override
   Widget build(BuildContext context) {
     //api로 교체 필요
-    addList();
 
     return DefaultTabController(
       length: 2,
@@ -312,7 +319,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
         body: TabBarView(
           children: [
             Tab(
-              child : _Info(widget.classroomID),
+              child : _Info(widget.classroomID, widget.classroomName),
             ),
             Tab(
               child : _entryLog(),

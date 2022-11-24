@@ -5,6 +5,7 @@ import '../../model/classEntity.dart';
 import '../../provider/classroomList_provider.dart';
 
 import '../../provider/classroom_provider.dart';
+import '../professor_page/professor_classroomInfo_widget.dart';
 
 class StudentClassroomWidget extends StatefulWidget {
   const StudentClassroomWidget({Key? key}) : super(key: key);
@@ -42,8 +43,9 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
                       create: (BuildContext context) =>
                           ClassroomListProvider(),
                     ),
-                  ], child : ClassroomInfo(
-                  classroomID : _classroomListProvider.classroomList[index].id
+                  ], child : StudentClassroomInfo(
+                  classroomID : _classroomListProvider.classroomList[index].id,
+                  classroomName : _classroomListProvider.classroomList[index].name
               ))));
             },
           ),
@@ -130,6 +132,7 @@ class Search extends SearchDelegate {
             suggestionList[index],
           ),
           onTap: (){
+            print('here is id ${thisClassroomListProvider.classroomList[index].id}');
             selectedResult = suggestionList[index];
             Navigator.push(context, MaterialPageRoute(builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(
@@ -140,8 +143,9 @@ class Search extends SearchDelegate {
                 create: (BuildContext context) =>
                     ClassroomListProvider(),
               ),
-            ], child : ClassroomInfo(
-                classroomID : thisClassroomListProvider.classroomList[index].id
+            ], child : StudentClassroomInfo(
+                classroomID : thisClassroomListProvider.classroomList[index].id,
+                classroomName : thisClassroomListProvider.classroomList[index].name
             ))));
           },
         );

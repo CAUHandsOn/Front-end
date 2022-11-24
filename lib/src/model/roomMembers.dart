@@ -1,18 +1,18 @@
-import 'member.dart';
+import 'package:handson/src/model/userEntity.dart';
 
 class RoomMembers{
+  UserEntity _user;
   String _getIn;
-  Member _member;
 
+  UserEntity get user => _user;
   String get getIn => _getIn;
-  Member get member => _member;
 
   RoomMembers(
+      this._user,
       this._getIn,
-      this._member,
       );
 
   RoomMembers.fromJson(Map<String,dynamic> json):
-    _member = Member.fromJson(json['member']),
+    _user = UserEntity.fromJson(json['user']),
     _getIn = json['getIn'] as String;
 }
