@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handson/src/ui/student_page/student_classroomInfo_widget.dart';
 import 'package:provider/provider.dart';
+import '../../API/ClassroomAPI.dart';
 import '../../model/classEntity.dart';
 import '../../provider/classroomList_provider.dart';
 
@@ -20,7 +21,7 @@ class _ProfessorClassroomWidgetState extends State<ProfessorClassroomWidget> {
   late List<ClassEntity> classroomList;
 
   Widget _listBody() {
-    _classroomListProvider.getClassroomList();
+    ClassroomAPI().getClassroomList(context);
 
     return Consumer<ClassroomListProvider>(
       builder: (context, provider, widget) {

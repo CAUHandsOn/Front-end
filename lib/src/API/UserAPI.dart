@@ -4,6 +4,24 @@ import '../ui/home.dart';
 
 class UserAPI{
 
+  Future<dynamic> callLoginAPI(Map<String, dynamic> data) async {
+    String url = 'https://bho.ottitor.shop/auth/sign-in';
+
+    http.Response response = await http.get(
+      Uri.parse(url),
+    );
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      print('login response body');
+      print(body);
+      return body['data'];
+    } else {
+      print(response.statusCode);
+      throw Exception("Failed Login");
+    }
+  }
+
   callPatchAPI(Map<String, dynamic> data, String originalID) async {
     String url = 'https://bho.ottitor.shop/user/me';
 
