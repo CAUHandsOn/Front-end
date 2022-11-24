@@ -154,7 +154,7 @@ class _StudentRealtimeWidgetState extends State<StudentRealtimeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("build : professor_realtime_widget");
+    print("build : student_realtime_widget");
     return Scaffold(
       appBar: AppBar(
         title: const Text('실시간 인원'),

@@ -34,8 +34,6 @@ class ClassroomListProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-  //  j3m2rfrokwegwe
-  // sajf34k2rl2332rwf213
 
   // getClassroomInfo(String id) async {
   //   String url = 'https://bho.ottitor.shop/room/$id';

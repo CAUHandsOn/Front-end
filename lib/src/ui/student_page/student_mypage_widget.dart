@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import '../../API/UserAPI.dart';
 import '../../provider/button_provider.dart';
 import '../home.dart';
 
@@ -21,30 +22,6 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
   @override
   void initState() {
     super.initState();
-  }
-
-  _callPatchAPI(Map<String, dynamic> data, String originalID) async {
-    String url = 'https://bho.ottitor.shop/user/me';
-
-    http.Response response = await http.patch(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json;charset=UTF-8'
-      },
-      body: jsonEncode(data),
-    );
-    print(data['id']);
-    print(jsonEncode(data));
-    print(response.body);
-    print(originalID);
-    if (response.statusCode == 200) {
-      return;
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('변경이 저장되지 않았습니다')));
-      throw Exception('Failed to Register');
-    }
   }
 
   Widget myInfo(context) {
@@ -204,7 +181,7 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                                     data['id'] = _newId;
                                   }
                                   try {
-                                    var response = await _callPatchAPI(
+                                    var response = await UserAPI().callPatchAPI(
                                         data, _userProvider.originalID[0]);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(

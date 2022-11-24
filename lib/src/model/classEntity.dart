@@ -1,14 +1,14 @@
 class ClassEntity{
-  late String name;
   late String id;
+  late String name;
 
   ClassEntity({
-    required this.name,
-    required this.id
+    required this.id,
+    required this.name
   });
 
   ClassEntity.fromMap(Map<String, dynamic>? map) {
-    name = map?['name'] ?? '';
     id = map?['id'] ?? '';
+    name = map?['name'] ?? '';
   }
 }
