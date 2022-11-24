@@ -8,8 +8,9 @@ import '../../model/classStudentNumber.dart';
 import '../../provider/classroom_provider.dart';
 
 class ClassroomInfo extends StatefulWidget {
-  const ClassroomInfo({Key? key, this.classroomID}) : super(key: key);
+  const ClassroomInfo({Key? key, this.classroomID, this.classroomName}) : super(key: key);
   final classroomID;
+  final classroomName;
 
   @override
   State<ClassroomInfo> createState() => _ClassroomInfoState();
@@ -77,10 +78,12 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     );
   }
 
-  Widget _Info(String classroomID){
-    return Consumer<ClassroomProvider>(
-      builder: (context, provider, widget) {
-        provider.getClassroomInfo(classroomID);
+  Widget _Info(String classroomID, String classroomName){
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => ClassroomProvider(),
+      builder: (context, child) {
+        context.watch<ClassroomProvider>().getClassroomInfo(classroomID);
+        context.read<ClassroomProvider>().getClassroomName(classroomID);
         return Padding(
           padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
           child: ListView(
@@ -98,7 +101,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                         Padding(
                           padding: const EdgeInsets.only(top: 10,left: 14),
                           child: Text(
-                            '현재 강의실 : ${provider.buildingName}',
+                            '현재 강의실 : ${context.read<ClassroomProvider>().buildingName}',
                             textAlign: TextAlign.start,
                             style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
                           ),
@@ -119,9 +122,9 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       ],
                     ),
                     const SizedBox(height: 40,),
-                    _headCountWidget(provider.memberList.length),
+                    _headCountWidget(context.watch<ClassroomProvider>().userList.length),
                     const SizedBox(height: 40,),
-                    _totalCountWidget(ClassStudentNumber().classStudentNumber[classroomID]!),
+                    _totalCountWidget(ClassStudentNumber().classStudentNumber[classroomName]!),
                     const SizedBox(height: 40,),
                   ],
                 ),
@@ -151,7 +154,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       endIndent: 10,
                       indent: 10,
                     ),
-                    provider.memberList.isEmpty
+                    context.watch<ClassroomProvider>().userList.isEmpty
                         ? const Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Center(
@@ -163,7 +166,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                         :ListView(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          children: provider.memberList.map((item) {
+                          children: context.watch<ClassroomProvider>().userList.map((item) {
                             return Padding(
                               padding: const EdgeInsets.only(left: 10,right: 10, bottom: 10),
                               child: Row(
@@ -319,7 +322,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
         body: TabBarView(
           children: [
             Tab(
-              child : _Info(widget.classroomID),
+              child : _Info(widget.classroomID, widget.classroomName),
             ),
             Tab(
               child : _entryLog(),

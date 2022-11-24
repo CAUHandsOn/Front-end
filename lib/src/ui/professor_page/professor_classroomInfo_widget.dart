@@ -93,7 +93,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                     const SizedBox(
                       height: 40,
                     ),
-                    _headCountWidget(provider.memberList.length),
+                    _headCountWidget(provider.userList.length),
                     const SizedBox(
                       height: 40,
                     ),
@@ -129,7 +129,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       endIndent: 10,
                       indent: 10,
                     ),
-                    provider.memberList.isEmpty
+                    provider.userList.isEmpty
                         ? const Padding(
                             padding: EdgeInsets.all(16.0),
                             child: Center(
@@ -143,7 +143,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                         : ListView(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            children: provider.memberList.map((item) {
+                            children: provider.userList.map((item) {
                               return Padding(
                                 padding: const EdgeInsets.only(
                                     left: 10, right: 10, bottom: 10),

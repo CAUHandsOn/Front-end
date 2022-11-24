@@ -43,7 +43,8 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
                           ClassroomListProvider(),
                     ),
                   ], child : ClassroomInfo(
-                  classroomID : _classroomListProvider.classroomList[index].id
+                  classroomID : _classroomListProvider.classroomList[index].id,
+                  classroomName : _classroomListProvider.classroomList[index].name
               ))));
             },
           ),
@@ -130,6 +131,7 @@ class Search extends SearchDelegate {
             suggestionList[index],
           ),
           onTap: (){
+            print('here is id ${thisClassroomListProvider.classroomList[index].id}');
             selectedResult = suggestionList[index];
             Navigator.push(context, MaterialPageRoute(builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(
@@ -141,7 +143,8 @@ class Search extends SearchDelegate {
                     ClassroomListProvider(),
               ),
             ], child : ClassroomInfo(
-                classroomID : thisClassroomListProvider.classroomList[index].id
+                classroomID : thisClassroomListProvider.classroomList[index].id,
+                classroomName : thisClassroomListProvider.classroomList[index].name
             ))));
           },
         );
