@@ -71,7 +71,7 @@ class _StudentWidgetState extends State<StudentWidget> {
     _userProvider = Provider.of<UserProvider>(context,listen: false);
     _userProvider.initUser(widget.user.name, widget.user.email, widget.user.id, widget.user.role);
     _classroomProvider = Provider.of<ClassroomProvider>(context,listen: false);
-    _classroomProvider.loadClassroomInfo(context);
+    _classroomProvider.loadStudentClassroomInfo(context);
   }
 
   @override

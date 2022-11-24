@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:handson/src/model/student.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
 import 'package:handson/src/provider/classroomList_provider.dart';
 import 'package:handson/src/provider/classroom_provider.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/home.dart';
+import 'package:handson/src/ui/professor_page/professor_classroom_widget.dart';
 import 'package:handson/src/ui/splash_widget.dart';
-import 'package:handson/src/ui/student_page/student_classroomInfo_widget.dart';
 import 'package:handson/src/ui/student_page/student_classroom_widget.dart';
 import 'package:provider/provider.dart';
 

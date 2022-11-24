@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../model/classStudentNumber.dart';
 import '../../provider/classroom_provider.dart';
 
-class ClassroomInfo extends StatefulWidget {
-  const ClassroomInfo({Key? key, this.classroomID}) : super(key: key);
+class ProfessorClassroomInfo extends StatefulWidget {
+  const ProfessorClassroomInfo({Key? key, this.classroomID, this.classroomName}) : super(key: key);
   final classroomID;
+  final classroomName;
 
   @override
-  State<ClassroomInfo> createState() => _ClassroomInfoState();
+  State<ProfessorClassroomInfo> createState() => _ProfessorClassroomInfo();
 }
 
-class _ClassroomInfoState extends State<ClassroomInfo> {
+class _ProfessorClassroomInfo extends State<ProfessorClassroomInfo> {
   Widget _headCountWidget(int headCount) {
     return Center(
       child: Column(
@@ -48,30 +50,31 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     );
   }
 
-  Widget _body(String classroomID) {
-    return Consumer<ClassroomProvider>(
-      builder: (context, provider, widget) {
-        provider.getClassroomInfo(classroomID);
+  Widget _body(String classroomID, String classroomName) {
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => ClassroomProvider(),
+      builder: (context, child) {
+        context.watch<ClassroomProvider>().getStudentClassroomInfo(classroomID);
         return Padding(
-          padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+          padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
           child: ListView(
             children: [
               Container(
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10)
+                ),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 10, left: 14),
+                          padding: const EdgeInsets.only(top: 10,left: 14),
                           child: Text(
-                            '현재 강의실 : ${provider.buildingName}',
+                            '현재 강의실 : $classroomName',
                             textAlign: TextAlign.start,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 18),
+                            style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
                           ),
                         ),
                       ],
@@ -85,22 +88,15 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 14),
-                          child: Text(
-                              '현재 시간 : ${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now())}'),
+                          child: Text('현재 시간 : ${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now())}'),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    _headCountWidget(provider.userList.length),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    _totalCountWidget(50),
-                    const SizedBox(
-                      height: 40,
-                    ),
+                    const SizedBox(height: 40,),
+                    _headCountWidget(context.watch<ClassroomProvider>().userList.length),
+                    const SizedBox(height: 40,),
+                    _totalCountWidget(ClassStudentNumber().classStudentNumber[classroomName]!),
+                    const SizedBox(height: 40,),
                   ],
                 ),
               ),
@@ -108,19 +104,19 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
               Container(
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10)
+                ),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: const [
                         Padding(
-                          padding: EdgeInsets.only(top: 10, left: 14),
+                          padding: EdgeInsets.only(top: 10,left: 14),
                           child: Text(
                             '실시간 참석자 명단',
                             textAlign: TextAlign.start,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 18),
+                            style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
                           ),
                         ),
                       ],
@@ -129,39 +125,37 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                       endIndent: 10,
                       indent: 10,
                     ),
-                    provider.userList.isEmpty
+                    context.watch<ClassroomProvider>().userList.isEmpty
                         ? const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Center(
-                              child: Text(
-                                "현재 강의실에 참석한 학생이 없습니다",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.black),
-                              ),
-                            ),
-                          )
-                        : ListView(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: provider.userList.map((item) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, bottom: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(item.id,
-                                        style: const TextStyle(fontSize: 16)),
-                                    Text(
-                                      item.name,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(
+                        child : Text("현재 강의실에 참석한 학생이 없습니다", style:
+                        TextStyle(fontSize: 20,
+                            color: Colors.black),
+                        ),),
+                    )
+                        :ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: context.watch<ClassroomProvider>().userList.map((item) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 10,right: 10, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(item.id,
+                                  style: const TextStyle(
+                                      fontSize: 16
+                                  )),
+                              Text(item.name,
+                                style: const TextStyle(
+                                    fontSize: 16
+                                ),),
+                            ],
                           ),
+                        );
+                      }).toList(),
+                    ),
                   ],
                 ),
               )
@@ -179,7 +173,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
       appBar: AppBar(
         title: const Text('강의실 정보'),
       ),
-      body: _body(widget.classroomID),
+      body: _body(widget.classroomID, widget.classroomName),
     );
   }
 }

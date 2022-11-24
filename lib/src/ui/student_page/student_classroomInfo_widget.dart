@@ -1,22 +1,20 @@
 import 'dart:collection';
-import 'dart:js_util';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../model/classStudentNumber.dart';
 import '../../provider/classroom_provider.dart';
 
-class ClassroomInfo extends StatefulWidget {
-  const ClassroomInfo({Key? key, this.classroomID, this.classroomName}) : super(key: key);
+class StudentClassroomInfo extends StatefulWidget {
+  const StudentClassroomInfo({Key? key, this.classroomID, this.classroomName}) : super(key: key);
   final classroomID;
   final classroomName;
 
   @override
-  State<ClassroomInfo> createState() => _ClassroomInfoState();
+  State<StudentClassroomInfo> createState() => _StudentClassroomInfoState();
 }
 
-class _ClassroomInfoState extends State<ClassroomInfo> {
+class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
   var _switchValue = false;
 
   // api로 교체 필요
@@ -82,8 +80,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
     return ChangeNotifierProvider(
       create: (BuildContext context) => ClassroomProvider(),
       builder: (context, child) {
-        context.watch<ClassroomProvider>().getClassroomInfo(classroomID);
-        context.read<ClassroomProvider>().getClassroomName(classroomID);
+        context.watch<ClassroomProvider>().getStudentClassroomInfo(classroomID);
         return Padding(
           padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
           child: ListView(
@@ -101,7 +98,7 @@ class _ClassroomInfoState extends State<ClassroomInfo> {
                         Padding(
                           padding: const EdgeInsets.only(top: 10,left: 14),
                           child: Text(
-                            '현재 강의실 : ${context.read<ClassroomProvider>().buildingName}',
+                            '현재 강의실 : $classroomName',
                             textAlign: TextAlign.start,
                             style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
                           ),
