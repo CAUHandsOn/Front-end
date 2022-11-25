@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:handson/src/provider/sharedPreference_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../model/classStudentNumber.dart';
@@ -17,27 +18,15 @@ class StudentClassroomInfo extends StatefulWidget {
 class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
   var _switchValue = false;
 
-  // api로 교체 필요
   // HashMap --> entryList[건물 이름] = List of 출입 기록
   // HashMap을 DB에 load 및 save 할 필요 (새로운 출입 생길 시 update 필요)
-  HashMap<String, List<String>> entryLog = HashMap<String, List<String>>();
-  List<String> entry = List.empty(growable: true);
+
+  // HashMap<String, List<String>> entryLog = HashMap<String, List<String>>();
+  // List<String> entry = List.empty(growable: true);
 
   @override
   void initState(){
     super.initState();
-    addList();
-  }
-  void addList(){
-    entry.add('2022-11-21T12:23:24.138883963');
-    entry.add('2022-11-22T12:24:24.138883963');
-    entry.add('2022-11-23T12:25:24.138883963');
-    entry.add('2022-11-24T12:26:24.138883963');
-    entry.add('2022-11-25T12:27:24.138883963');
-
-
-    entryLog['310관 312호'] = entry;
-
   }
 
   Widget _headCountWidget(int headCount) {
@@ -76,7 +65,7 @@ class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
     );
   }
 
-  Widget _Info(String classroomID, String classroomName){
+  Widget _info(String classroomID, String classroomName){
     return ChangeNotifierProvider(
       create: (BuildContext context) => ClassroomProvider(),
       builder: (context, child) {
@@ -192,118 +181,131 @@ class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
     );
   }
 
-  Widget _entryLog(){
-    return Padding(
-      padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
-      child: ListView(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: Column(
+  Widget _entryLog(String classroomName) {
+    return Consumer<SPFProvider>(
+        builder: (context, provider, widget) {
+          print('Shared Preference 데이터 값 : ${provider.decodedMap}');
+          return Padding(
+            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+            child: ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10,left: 14),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Column(
                     children: [
-                      Text(
-                        '현재 강의실 : 310관 B312',
-                        style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '현재 강의실 $classroomName',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 18),
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  '내역 지우기',
+                                  style: TextStyle(fontWeight: FontWeight.w400,
+                                      fontSize: 18),
+                                ),
+                                Switch(
+                                    value: _switchValue,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _switchValue = value;
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        endIndent: 10,
+                        indent: 10,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const Text(
-                            '내역 지우기',
-                            style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 14),
+                            child: Text('현재 시간 : ${DateFormat(
+                                'yyyy-MM-dd kk:mm').format(DateTime.now())}',
+                              style: const TextStyle(color: Colors.black),),
                           ),
-                          Switch(
-                              value: _switchValue,
-                              onChanged: (value) {
-                                setState(() {
-                                  _switchValue = value;
-                                });
-                              }),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                const Divider(
-                  endIndent: 10,
-                  indent: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 14),
-                      child: Text('현재 시간 : ${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now())}',
-                      style: TextStyle(color: Colors.black),),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 40,),
+                      const SizedBox(height: 40,),
 
-                entryLog!['310관 312호']!.isEmpty
-                    ? const Padding( //비어 있으면
+                      provider.decodedMap[classroomName]!.isEmpty
+                          ? const Padding( //비어 있으면
                         padding: EdgeInsets.all(16.0),
                         child: Center(
-                          child : Text("현재 강의실에 참석한 학생이 없습니다", style:
+                          child: Text("강의실에 참석한 기록이 없습니다", style:
                           TextStyle(fontSize: 20,
                               color: Colors.black),
                           ),),
                       )
-                    : _switchValue //비어 있지 않으며 내역 지우기가 활성화 일 시
-                    ? ListView.separated(
+                          : _switchValue //비어 있지 않으며 내역 지우기가 활성화 일 시
+                          ? ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: entryLog!['310관 312호']!.length,
+                        itemCount: provider.decodedMap[classroomName]!.length,
                         itemBuilder: (context, index) {
                           return Dismissible(
-                            key: ValueKey(entryLog!['310관 312호']![index]),
-                            direction: DismissDirection.startToEnd,//왼쪽에서 오른쪽으로 스와이프
-                            onDismissed: (direction){//값을 완전히 삭제
+                            key: ValueKey(provider.decodedMap[classroomName]![index]),
+                            direction: DismissDirection.startToEnd,
+                            //왼쪽에서 오른쪽으로 스와이프
+                            onDismissed: (direction) { //값을 완전히 삭제
                               setState(() {
-                                if(direction== DismissDirection.startToEnd){
-                                  print('길이 ${entryLog!['310관 312호']!.length}');
-                                  entryLog!['310관 312호']!.removeAt(index);
+                                if (direction == DismissDirection.startToEnd) {
+                                  print('길이 ${provider.decodedMap[classroomName]!.length}');
+                                  provider.decodedMap[classroomName]!.removeAt(index);
+                                  provider.saveData('example', provider.decodedMap); //삭제할 때마다 SPF에 데이터 새로 저장
                                 }
                               });
                             },
                             child: ListTile(
-                              title: Text('${entryLog!['310관 312호']![index]}'),
+                              title: Text('${provider.decodedMap[classroomName]![index]}'),
                             ),
                           );
-                        }, separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1),
+                        },
+                        separatorBuilder: (BuildContext context,
+                            int index) => const Divider(thickness: 1),
                       )
-                    : ListView.separated( //비어 있지 않으며 내역 지우기가 비활성화 일 시
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: entryLog!['310관 312호']!.length,
-                          itemBuilder: (context, index) => ListTile(
-                            title: Text(entryLog!['310관 312호']![index], style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
+                          : ListView.separated( //비어 있지 않으며 내역 지우기가 비활성화 일 시
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: provider.decodedMap[classroomName]!.length,
+                        itemBuilder: (context, index) =>
+                            ListTile(
+                              title: Text(provider.decodedMap[classroomName]![index],
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
-                          ),
-                          separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1),
-                        ),
+                        separatorBuilder: (BuildContext context,
+                            int index) => const Divider(thickness: 1),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    //api로 교체 필요
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -319,10 +321,10 @@ class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
         body: TabBarView(
           children: [
             Tab(
-              child : _Info(widget.classroomID, widget.classroomName),
+              child : _info(widget.classroomID, widget.classroomName),
             ),
             Tab(
-              child : _entryLog(),
+              child : _entryLog(widget.classroomName),
             ),
           ],
         )

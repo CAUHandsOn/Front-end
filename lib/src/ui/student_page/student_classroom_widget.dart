@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handson/src/provider/sharedPreference_provider.dart';
 import 'package:handson/src/ui/student_page/student_classroomInfo_widget.dart';
 import 'package:provider/provider.dart';
 import '../../model/classEntity.dart';
@@ -32,7 +33,10 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
               ),
             ),
             trailing: const Icon(Icons.arrow_forward),
-            onTap: (){
+            onTap: () async{
+              var pvdSPF = SPFProvider();
+              await pvdSPF.loadData('example');
+
               Navigator.push(context, MaterialPageRoute(builder: (context) =>
                   MultiProvider(providers: [
                     ChangeNotifierProvider(
@@ -42,6 +46,11 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
                     ChangeNotifierProvider(
                       create: (BuildContext context) =>
                           ClassroomListProvider(),
+                    ),
+                    ChangeNotifierProvider(
+                      create: (BuildContext context) {
+                        return pvdSPF;
+                     }
                     ),
                   ], child : StudentClassroomInfo(
                   classroomID : _classroomListProvider.classroomList[index].id,
@@ -131,9 +140,13 @@ class Search extends SearchDelegate {
           title: Text(
             suggestionList[index],
           ),
-          onTap: (){
+          onTap: () async{
+            var pvdSPF = SPFProvider();
+            await pvdSPF.loadData('example');
+
             print('here is id ${thisClassroomListProvider.classroomList[index].id}');
             selectedResult = suggestionList[index];
+
             Navigator.push(context, MaterialPageRoute(builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(
                 create: (BuildContext context) =>
@@ -142,6 +155,11 @@ class Search extends SearchDelegate {
               ChangeNotifierProvider(
                 create: (BuildContext context) =>
                     ClassroomListProvider(),
+              ),
+              ChangeNotifierProvider(
+                  create: (BuildContext context) {
+                    return pvdSPF;
+                  }
               ),
             ], child : StudentClassroomInfo(
                 classroomID : thisClassroomListProvider.classroomList[index].id,
