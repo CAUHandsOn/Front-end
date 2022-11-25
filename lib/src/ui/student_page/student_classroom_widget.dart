@@ -35,7 +35,6 @@ class _StudentClassroomWidgetState extends State<StudentClassroomWidget> {
             trailing: const Icon(Icons.arrow_forward),
             onTap: () async{
               var pvdSPF = SPFProvider();
-              await pvdSPF.saveData('example');
               await pvdSPF.loadData('example');
 
               Navigator.push(context, MaterialPageRoute(builder: (context) =>
@@ -143,7 +142,6 @@ class Search extends SearchDelegate {
           ),
           onTap: () async{
             var pvdSPF = SPFProvider();
-            await pvdSPF.saveData('example');
             await pvdSPF.loadData('example');
 
             print('here is id ${thisClassroomListProvider.classroomList[index].id}');

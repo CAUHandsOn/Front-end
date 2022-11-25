@@ -184,7 +184,7 @@ class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
   Widget _entryLog(String classroomName) {
     return Consumer<SPFProvider>(
         builder: (context, provider, widget) {
-          print('hihihihihihi ${provider.decodedMap}');
+          print('Shared Preference 데이터 값 : ${provider.decodedMap}');
           return Padding(
             padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
             child: ListView(
@@ -266,6 +266,7 @@ class _StudentClassroomInfoState extends State<StudentClassroomInfo> {
                                 if (direction == DismissDirection.startToEnd) {
                                   print('길이 ${provider.decodedMap[classroomName]!.length}');
                                   provider.decodedMap[classroomName]!.removeAt(index);
+                                  provider.saveData('example', provider.decodedMap); //삭제할 때마다 SPF에 데이터 새로 저장
                                 }
                               });
                             },
