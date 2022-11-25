@@ -24,7 +24,6 @@ class ClassroomListProvider extends ChangeNotifier {
     );
     log(jsonDecode(response.body).toString());
     if (response.statusCode == 200) {
-      print("hhhh ${jsonDecode(response.body)['data']}");
       _classroomList =
           await jsonDecode(response.body)['data'].map<ClassEntity>((data) {
         if (_classroomList.isEmpty) {
