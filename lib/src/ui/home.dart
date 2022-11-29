@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
@@ -25,6 +26,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late UserProvider _userProvider;
   final _formKey = GlobalKey<FormState>();
   String _currentEmail = '';
   String _currentPassword = '';
@@ -161,37 +163,38 @@ class _HomeState extends State<Home> {
                             password: _currentPassword,
                             role: "professor",
                             id: '1234');
+
                         accessToken = re1['data']['accessToken'].toString();
                         log('accessToken = ' + accessToken);
                         log('callLignAPI 완료');
-                        // if (response['role'] == 'student') {
-                        //   Navigator.pushReplacement(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) =>
-                        //               MultiProvider(providers: [
-                        //                 ChangeNotifierProvider(
-                        //                   create: (BuildContext context) =>
-                        //                       UserProvider(),
-                        //                 ),
-                        //                 ChangeNotifierProvider(
-                        //                   create: (BuildContext context) =>
-                        //                       BottomNavigationProvider(),
-                        //                 ),
-                        //                 ChangeNotifierProvider(
-                        //                   create: (BuildContext context) =>
-                        //                       ClassroomProvider(),
-                        //                 ),
-                        //                 ChangeNotifierProvider(
-                        //                   create: (BuildContext context) =>
-                        //                       ClassroomListProvider(),
-                        //                 ),
-                        //                 ChangeNotifierProvider(
-                        //                   create: (BuildContext context) =>
-                        //                       ButtonProvider(),
-                        //                 ),
-                        //               ], child: StudentWidget(user: user))));
-                        // }
+                        if (user.role == 'student') {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MultiProvider(providers: [
+                                        ChangeNotifierProvider(
+                                          create: (BuildContext context) =>
+                                              UserProvider(),
+                                        ),
+                                        ChangeNotifierProvider(
+                                          create: (BuildContext context) =>
+                                              BottomNavigationProvider(),
+                                        ),
+                                        ChangeNotifierProvider(
+                                          create: (BuildContext context) =>
+                                              ClassroomProvider(),
+                                        ),
+                                        ChangeNotifierProvider(
+                                          create: (BuildContext context) =>
+                                              ClassroomListProvider(),
+                                        ),
+                                        ChangeNotifierProvider(
+                                          create: (BuildContext context) =>
+                                              ButtonProvider(),
+                                        ),
+                                      ], child: StudentWidget(user: user))));
+                        }
                         if (user.role == 'professor') {
                           Navigator.pushReplacement(
                               context,

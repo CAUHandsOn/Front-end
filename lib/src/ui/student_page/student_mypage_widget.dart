@@ -34,12 +34,16 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
       },
       body: jsonEncode(data),
     );
-    print(data['id']);
-    print(jsonEncode(data));
-    print(response.body);
-    print(originalID);
+    // print(data['id']);
+    // print(jsonEncode(data));
+    // print(response.body);
+    // print(originalID);
     if (response.statusCode == 200) {
-      return;
+      Map re = jsonDecode(response.body);
+      log(re.toString());
+
+      _userProvider.name = re['data']['name'];
+      _userProvider.email = re['data']['email'];
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('변경이 저장되지 않았습니다')));
@@ -149,7 +153,6 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
 
   Widget myPage(context) {
     final _formKey = GlobalKey<FormState>();
-    String _newId = '';
     String _newName = '';
     String _newEmail = '';
 
@@ -200,23 +203,14 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                                   if (_newEmail != '' && _newEmail.isNotEmpty) {
                                     data['email'] = _newEmail;
                                   }
-                                  if (_newId != '' && _newId.isNotEmpty) {
-                                    data['id'] = _newId;
-                                  }
+
                                   try {
-                                    var response = await _callPatchAPI(
+                                    await _callPatchAPI(
                                         data, _userProvider.originalID[0]);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content: Text('변경이 저장되었습니다')));
                                     _buttonProvider.updateEditButton(0);
-                                    Map re = jsonDecode(response.body);
-                                    log(re.toString());
-                                    _userProvider.initUser(
-                                        re['data']['name'],
-                                        re['data']['email'],
-                                        re['data']['id'],
-                                        _userProvider.role);
                                   } on Exception {
                                     print('error');
                                   }
@@ -250,21 +244,14 @@ class _StudentMyPageWidgetState extends State<StudentMyPageWidget> {
                   const SizedBox(
                     height: 20,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: '학번',
-                      hintText: _userProvider.id,
-                      border: const OutlineInputBorder(),
-                    ),
-                    onSaved: (value) {
-                      _newId = value!;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter ID';
-                      }
-                      return null;
-                    },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '학번 : ${_userProvider.id}',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
