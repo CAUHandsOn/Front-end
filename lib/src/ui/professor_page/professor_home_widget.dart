@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
-import 'package:handson/src/provider/classroom_provider.dart';
 import 'package:handson/src/provider/user_provider.dart';
 import 'package:handson/src/ui/professor_page/prefessor_mypage_widget.dart';
 import 'package:handson/src/ui/professor_page/professor_classroom_widget.dart';
@@ -19,7 +18,6 @@ class ProfessorWidget extends StatefulWidget {
 class _ProfessorWidgetState extends State<ProfessorWidget> {
   late UserProvider _userProvider;
   late BottomNavigationProvider _bottomNavigationProvider;
-  late ClassroomProvider _classroomProvider;
   Widget _bottomNavigationBarWidget() {
     return BottomNavigationBar(
       items: const [
@@ -58,9 +56,7 @@ class _ProfessorWidgetState extends State<ProfessorWidget> {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     _userProvider.initUser(
         widget.user.name, widget.user.email, widget.user.id, widget.user.role);
-    _classroomProvider = Provider.of<ClassroomProvider>(context, listen: false);
-    _classroomProvider.loadStudentClassroomInfo(context);
-  }
+    }
 
   @override
   Widget build(BuildContext context) {

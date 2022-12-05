@@ -8,9 +8,6 @@ import 'package:handson/src/ui/student_page/student_mypage_widget.dart';
 import 'package:handson/src/ui/student_page/student_realtime_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/classroomList_provider.dart';
-import '../../provider/classroom_provider.dart';
-
 class StudentWidget extends StatefulWidget {
   StudentWidget({Key? key,required this.user}) : super(key: key);
   late User user;
@@ -22,7 +19,6 @@ class StudentWidget extends StatefulWidget {
 class _StudentWidgetState extends State<StudentWidget> {
   late UserProvider _userProvider;
   late BottomNavigationProvider _bottomNavigationProvider;
-  late ClassroomProvider _classroomProvider;
   late ButtonProvider _buttonProvider;
 
   Widget _bottomNavigationBarWidget(){
@@ -70,8 +66,6 @@ class _StudentWidgetState extends State<StudentWidget> {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context,listen: false);
     _userProvider.initUser(widget.user.name, widget.user.email, widget.user.id, widget.user.role);
-    _classroomProvider = Provider.of<ClassroomProvider>(context,listen: false);
-    _classroomProvider.loadStudentClassroomInfo(context);
   }
 
   @override

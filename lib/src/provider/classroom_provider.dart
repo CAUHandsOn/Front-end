@@ -20,21 +20,6 @@ class ClassroomProvider extends ChangeNotifier {
   List<UserEntity> get userList => _userList;
   String get buildingName => _buildingName;
 
-  Future<String> loadJsonFile(context) {
-    return Future.value(DefaultAssetBundle.of(context)
-        .loadString("assets/json/classroom_response.json"));
-  }
-
-  loadStudentClassroomInfo(context) async {
-    print("loadStudentClassroomInfo called");
-    String data = await loadJsonFile(context);
-    print(data);
-    final jsonResult = jsonDecode(data);
-    _StudentClassroomInfo = Classroom.fromJson(jsonResult);
-    is_loaded = true;
-    notifyListeners();
-  }
-
   getStudentClassroomInfo(String id) async {
     String url = 'https://bho.ottitor.shop/room/$id';
     http.Response response = await http.get(
@@ -46,7 +31,7 @@ class ClassroomProvider extends ChangeNotifier {
       },
     );
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body)['data']);
+      print('api call ${jsonDecode(response.body)['data']}');
       _userList = await jsonDecode(response.body)['data']['roomMembers']
           .where((data) => RoomMembers.fromJson(data).user.role == 'student')
           .map<UserEntity>((data) => RoomMembers.fromJson(data).user)

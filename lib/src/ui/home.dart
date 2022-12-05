@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:handson/src/model/user.dart';
 import 'package:handson/src/provider/bottom_navigation_provider.dart';
